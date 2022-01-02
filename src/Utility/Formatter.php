@@ -2,6 +2,8 @@
 
 namespace Jsvrcek\ICS\Utility;
 
+use DateTime;
+
 use Jsvrcek\ICS\Model\Description\Conference;
 
 class Formatter
@@ -14,7 +16,7 @@ class Formatter
      * @param \DateTime $dateTime
      * @return string
      */
-    public function getFormattedDateTime(\DateTime $dateTime)
+    public function getFormattedDateTime(DateTime $dateTime)
     {
         return $dateTime->format(self::DATE_TIME);
     }
@@ -27,7 +29,7 @@ class Formatter
     {
         $prefix = ($offset < 0) ? '-' : '+';
 
-        return $prefix.gmdate('Hi', abs($offset));
+        return $prefix . gmdate('Hi', abs($offset));
     }
 
     /**
@@ -37,15 +39,16 @@ class Formatter
     public function getFormattedUTCDateTime(\DateTime $dateTime)
     {
         return $dateTime->setTimezone(new \DateTimeZone('UTC'))
-                    ->format(self::DATE_TIME_UTC);
+            ->format(self::DATE_TIME_UTC);
     }
 
     /**
      * @param \DateTime $dateTime
      * @return string
      */
-    public function getFormattedDateTimeWithTimeZone(\DateTime $dateTime) {
-        return 'TZID=' . $dateTime->getTimezone()->getName() . ':' . self::getFormattedDateTime($dateTime);
+    public function getFormattedDateTimeWithTimeZone(\DateTime $dateTime)
+    {
+        return 'TZID=' . $dateTime->getTimezone()->getName() . ':' . $this->getFormattedDateTime($dateTime);
     }
 
     /**
@@ -65,7 +68,7 @@ class Formatter
     public function getFormattedUri($uri)
     {
         if (strpos($uri, '@') && stripos($uri, 'mailto:') === false) {
-            $uri = 'mailto:'.$uri;
+            $uri = 'mailto:' . $uri;
         }
 
         return $uri;
@@ -114,8 +117,8 @@ class Formatter
      */
     public function getFormattedImageString(array $image)
     {
-        $imageString = 'IMAGE;VALUE='.$image['VALUE'];
-        if ($image['VALUE'] == 'BINARY'){
+        $imageString = 'IMAGE;VALUE=' . $image['VALUE'];
+        if ($image['VALUE'] == 'BINARY') {
             $imageString .= ';ENCODING=' . $image['ENCODING'];
         }
 
@@ -131,19 +134,17 @@ class Formatter
             $imageString .= ':' . $image['BINARY'];
         }
         return $imageString;
-
     }
 
     /**
      * Escapes , and ; characters in text type fields.
      *
-     * @param string $text The text to escape
-     * @return string
+     * @param string $text The text to escape.
      */
-    public function getEscapedText($text)
+    function getEscapedText(string $text): string
     {
         $text = preg_replace('/((?<!\\\),|(?<!\\\);)/', '\\\$1', $text);
-        return preg_replace('/((?<!\\\)\\\(?!,|;|n|N|\\\))/', '\\\\$1',$text);
+        return preg_replace('/((?<!\\\)\\\(?!,|;|n|N|\\\))/', '\\\\$1', $text);
     }
 
     public function getConferenceText(Conference $conference)
