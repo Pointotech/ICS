@@ -65,7 +65,7 @@ class Provider implements Iterator
     /* (non-PHPdoc)
      * @see Iterator::key()
      */
-    function key()
+    function key(): mixed
     {
         return $this->key;
     }
