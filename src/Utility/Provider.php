@@ -57,7 +57,7 @@ class Provider implements Iterator
     /* (non-PHPdoc)
      * @see Iterator::current()
      */
-    function current()
+    function current(): mixed
     {
         return current($this->data);
     }
