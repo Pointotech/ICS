@@ -2,10 +2,13 @@
 
 namespace Jsvrcek\ICS\Utility;
 
-class Provider implements \Iterator
+use Closure;
+use Iterator;
+
+class Provider implements Iterator
 {
     /**
-     * @var \Closure
+     * @var Closure
      */
     private $provider;
 
@@ -30,12 +33,12 @@ class Provider implements \Iterator
     private $first;
 
     /**
-     * @param \Closure $provider An optional closure for adding items in batches during iteration. The closure will be
+     * @param Closure $provider An optional closure for adding items in batches during iteration. The closure will be
      *     called each time the end of the internal data array is reached during iteration, and the current data
      *     array key value will be passed as an argument. The closure should return an array containing the next
      *     batch of items.
      */
-    public function __construct(\Closure $provider = null)
+    function __construct(Closure $provider = null)
     {
         $this->provider = $provider;
     }
@@ -46,7 +49,7 @@ class Provider implements \Iterator
      *
      * @param mixed $item
      */
-    public function add($item)
+    function add($item)
     {
         $this->manuallyAddedData[] = $item;
     }
@@ -54,7 +57,7 @@ class Provider implements \Iterator
     /* (non-PHPdoc)
      * @see Iterator::current()
      */
-    public function current()
+    function current()
     {
         return current($this->data);
     }
@@ -62,7 +65,7 @@ class Provider implements \Iterator
     /* (non-PHPdoc)
      * @see Iterator::key()
      */
-    public function key()
+    function key()
     {
         return $this->key;
     }
@@ -70,7 +73,7 @@ class Provider implements \Iterator
     /* (non-PHPdoc)
      * @see Iterator::next()
      */
-    public function next()
+    function next(): void
     {
         array_shift($this->data);
         $this->key++;
@@ -79,7 +82,7 @@ class Provider implements \Iterator
     /* (non-PHPdoc)
      * @see Iterator::rewind()
      */
-    public function rewind()
+    function rewind(): void
     {
         $this->data = array();
         $this->key = 0;
@@ -91,7 +94,7 @@ class Provider implements \Iterator
      * (non-PHPdoc)
      * @see Iterator::valid()
      */
-    public function valid()
+    function valid(): bool
     {
         if (count($this->data) < 1) {
             if ($this->provider instanceof \Closure) {
@@ -111,7 +114,7 @@ class Provider implements \Iterator
     /*
      * Returns first event
      */
-    public function first()
+    function first()
     {
         if (isset($this->first)) {
             return $this->first;
