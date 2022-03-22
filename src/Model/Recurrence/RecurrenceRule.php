@@ -141,6 +141,7 @@ class RecurrenceRule
     }
 
     /**
+     * Setting UNTIL will remove a COUNT if set - you cannot have both
      *
      * @param \DateTime $until = null
      * @return \Jsvrcek\ICS\Model\Recurrence\RecurrenceRule
@@ -148,6 +149,7 @@ class RecurrenceRule
     public function setUntil(\DateTime $until = null)
     {
         $this->until = $until;
+        $this->count = null;
         return $this;
     }
 
@@ -162,6 +164,8 @@ class RecurrenceRule
 
     
     /**
+     * Setting a COUNT will remove the UNTIL date if set - you cannot have both
+     * 
      * @param integer $count
      * @return \Jsvrcek\ICS\Model\Recurrence\RecurrenceRule
      */
@@ -170,6 +174,7 @@ class RecurrenceRule
         $this->validateInteger($count);
         
         $this->count = $count;
+        $this->until = null;
         return $this;
     }
 
@@ -486,6 +491,10 @@ class RecurrenceRule
                 case 'UNTIL':
                     $untilDate = new \DateTime(str_replace('Z', '', $value), new \DateTimeZone('UTC'));
                     $this->setUntil($untilDate);
+                    break;
+
+                case 'COUNT':
+                    $this->setCount(intval($value));
                     break;
                     
                 default:
